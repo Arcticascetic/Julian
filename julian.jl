@@ -6,7 +6,7 @@ type Soldier
 end
 
 type JetFighterClass
-	name::string
+	name::String
 	linear_accel::UInt32
 	rotational_accel::UInt32
 	MaxVel::UInt32
@@ -21,33 +21,42 @@ type WeaponsClass
 	MaxAccel::Uint32
 end
 
+type State
+	Pos::Array{Int64,1}
+	Vel::Array{Int64,1}
+end
+
 type Missile
-	name::MissileName
+	name::String
 	WeaponType::WeaponsClass
-	Pos::Array(Int64,3)
-	Vel::Array(Int64,3)
+	state::State
 end	
 
-type Guns
-	name::GunName
+type bullets
+	name::String
 	WeaponType::WeaponsClass
-	Pos::Array(Int64,3)
-	Vel::Array(Int64,3)
+	state::State
 end	
 
 type JetFighter
 	Pilot::Soldier
 	PlaneType::JetFighterClass
-	Pos::Array(Int64,3)
-	Vel::Array(Int64,3)
-	Weapons::Array
+	state::State
+	Missiles::Array{Missile,1}
 end
 
 type LandingStrip
-	Dimensions::Array(Int64,6);
+	start::Array(Int64,3);
+	end::Array(Int64,3);
 end
 
+function updatePos(A,delta_t)
+	A.Pos += A.Vel.*delta_t
+end
 
-function CreateSoldier(name::String, 
+function updateVel(A,a,delta_t)
+	A.Pos += A.Vel + a.*delta_t
+end
 
-
+function CreatePlane(Airport, FighterClass, Pilot)
+	return JetFighter(Pilot,FighterClass, Airport.start, [0,0,0],
